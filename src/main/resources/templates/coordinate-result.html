@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>コーデ結果</title>
+</head>
+
+<form th:action="@{/clothes}" method="get" style="margin-bottom: 20px;">
+	<select th:field="*{category}" required>
+		<option value="">-- 属性を選択 --</option>
+		<option value="暑い">暑い</option>
+		<option value="寒い">寒い</option>
+		<option value="面接用">面接用</option>
+		<option value="コスプレ">コスプレ</option>
+	</select>
+    <button type="submit">検索</button>
+    <a th:href="@{/clothes}">クリア</a>
+</form>
+
+<!-- 一覧テーブル -->
+<table border="1" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+    <tr><th>ID</th><th>名前</th><th>カテゴリ</th><th>属性</th></tr>
+    <tr th:each="cloth : ${clothes}">
+        <td th:text="${cloth.id}"></td>
+        <td th:text="${cloth.name}"></td>
+        <td th:text="${cloth.category}"></td>
+        <td th:text="${cloth.attribute}"></td>
+    </tr>
+</table>
+
+
+</html>

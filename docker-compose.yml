@@ -1,0 +1,23 @@
+services:
+  cloth-db: # ① PostgreSQLのコンテナ設定
+    image: postgres:16-alpine
+    container_name: cloth-db
+    environment:
+      POSTGRES_DB: clothdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data # データを永続化（コンテナを消しても消えない）
+
+  cloth-app: # ② Spring Bootのコンテナ設定
+    build: .   # 同じフォルダにあるDockerfileを使ってビルドする
+    container_name: cloth-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cloth-db # DBが先に起動するように制御する
+
+volumes:
+  db_data: # 永続化用のボリュームを定義

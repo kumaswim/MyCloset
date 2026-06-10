@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>MyCloset</title></head>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h1>MyCloset</h1>
+
+    <!-- 検索フォーム -->
+    <form th:action="@{/clothes}" method="get" style="margin-bottom: 20px;">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="名前で検索" />
+        <button type="submit">検索</button>
+        <a th:href="@{/clothes}">クリア</a>
+    </form>
+
+	<!-- 登録・編集フォーム -->
+	    <form th:action="@{/clothes/save}" th:object="${newCloth}" method="post" style="background:#f0f0f0; padding:15px; margin-bottom:20px;">
+	        <input type="hidden" th:field="*{id}" />
+	        
+	        <!-- ① 名前はテキスト入力のままでOK！ -->
+	        <input type="text" th:field="*{name}" placeholder="名前" required />
+	        
+	        <!-- ② カテゴリをタップメニューに改造！ -->
+	        <select th:field="*{category}" required>
+	            <option value="">-- カテゴリを選択 --</option>
+	            <option value="HEAD">HEAD (髪飾り)</option>
+	            <option value="TOPS">TOPS (シャツ)</option>
+	            <option value="BOTTOMS">BOTTOMS (ズボン・スカート)</option>
+	            <option value="LEG">LEG (靴下)</option>
+	            <option value="ACCESSORY">ACCESSORY (アクセサリ)</option>
+	        </select>
+
+	        <!-- ③ 属性（天候やセット）もタップメニューに改造！ -->
+	        <select th:field="*{attribute}" required>
+	            <option value="">-- 属性を選択 --</option>
+	            <option value="暑い">暑い</option>
+	            <option value="寒い">寒い</option>
+	            <option value="面接用">面接用</option>
+	            <option value="コスプレ">コスプレ</option>
+	        </select>
+
+	        <button type="submit" th:text="*{id} != null ? '更新' : '登録'">保存</button>
+	    </form>
+
+    <!-- 一覧テーブル -->
+    <table border="1" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+        <tr><th>ID</th><th>名前</th><th>カテゴリ</th><th>属性</th><th>操作</th></tr>
+        <tr th:each="cloth : ${clothes}">
+            <td th:text="${cloth.id}"></td>
+            <td th:text="${cloth.name}"></td>
+            <td th:text="${cloth.category}"></td>
+            <td th:text="${cloth.attribute}"></td>
+            <td>
+                <a th:href="@{/clothes/edit/{id}(id=${cloth.id})}">編集</a> |
+                <a th:href="@{/clothes/delete/{id}(id=${cloth.id})}" th:onclick="return confirm('削除しますか？')">削除</a>
+            </td>
+        </tr>
+    </table>
+		
+	<form action="/clothes/coordinate" method="get" style="margin-top: 20px;">
+	    <button type="submit">コーディネートを自動生成</button>
+	</form>
+	
+</body>
+</html>
