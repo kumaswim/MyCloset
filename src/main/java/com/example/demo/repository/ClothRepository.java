@@ -11,4 +11,5 @@ import com.example.demo.model.Cloth;
 public interface ClothRepository extends JpaRepository<Cloth, Long> {
 	// タイトルでの部分一致検索メソッドを自動生成
 	List<Cloth> findByNameContaining(String keyword);
+	List<Cloth> findByCategory(String category);
 }

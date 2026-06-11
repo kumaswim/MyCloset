@@ -1,32 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>コーデ結果</title>
 </head>
+<body>
 
-<form th:action="@{/clothes}" method="get" style="margin-bottom: 20px;">
-	<select th:field="*{category}" required>
-		<option value="">-- 属性を選択 --</option>
-		<option value="暑い">暑い</option>
-		<option value="寒い">寒い</option>
-		<option value="面接用">面接用</option>
-		<option value="コスプレ">コスプレ</option>
-	</select>
-    <button type="submit">検索</button>
-    <a th:href="@{/clothes}">クリア</a>
-</form>
+<div style="margin-bottom: 20px;">
+        <a th:href="@{/clothes}" style="text-decoration: none; display: inline-block; padding: 6px 12px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; color: #333;">
+            ⬅️ クローゼット（衣服一覧）に戻る
+        </a>
+    </div>
 
-<!-- 一覧テーブル -->
-<table border="1" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-    <tr><th>ID</th><th>名前</th><th>カテゴリ</th><th>属性</th></tr>
-    <tr th:each="cloth : ${clothes}">
-        <td th:text="${cloth.id}"></td>
-        <td th:text="${cloth.name}"></td>
-        <td th:text="${cloth.category}"></td>
-        <td th:text="${cloth.attribute}"></td>
-    </tr>
-</table>
+<form th:action="@{/clothes/coordinate}" method="get" style="margin-bottom: 20px;">
+        <select name="attribute" required>
+            <option value="">-- 属性を選択 --</option>
+            <option th:each="attr : ${attributes}" 
+                    th:value="${attr}" 
+                    th:text="${attr}"
+                    th:selected="${attr == selectedAttr}">
+            </option>
+        </select>
+        <button type="submit">検索</button>
+        <a th:href="@{/clothes/coordinate}">クリア</a>
+    </form>
 
+	<!-- 👕 【改善点①】今日のランダムコーデ提案エリアをテーブルの上に配置！ 👖 -->
+	    <!-- 属性（selectedAttr）が選ばれているときだけ、このエリアを最優先で表示するお！ -->
+	    <div th:if="${selectedAttr != null and !selectedAttr.isEmpty()}" 
+	         style="background-color: #f9f9f9; border: 2px dashed #ff9999; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+	        <h3 style="color: #ff6666; margin-top: 0;">✨ 本日の服（属性：<span th:text="${selectedAttr}"></span>） ✨</h3>
+	        
+	        <ul>
+	            <!-- トップスの表示 -->
+	            <li>
+	                <strong>【トップス】</strong> 
+	                <!-- 💡 【改善点②】th:blockを使って、データがある時とない時の分岐を完全隔離！ -->
+	                <th:block th:if="${selectedTop != null}">
+	                    <span th:text="${selectedTop.name}"></span> 
+	                </th:block>
+	                <th:block th:if="${selectedTop == null}">
+	                    <span style="color: #999;">条件に合うトップスが見つからなかったお……</span>
+	                </th:block>
+	            </li>
 
+	            <!-- ボトムスの表示 -->
+	            <li style="margin-top: 10px;">
+	                <strong>【ボトムス】</strong> 
+	                <th:block th:if="${selectedBottom != null}">
+	                    <span th:text="${selectedBottom.name}"></span> 
+	                </th:block>
+	                <th:block th:if="${selectedBottom == null}">
+	                    <span style="color: #999;">条件に合うボトムスが見つからなかったお……</span>
+	                </th:block>
+	            </li>
+	        </ul>
+	    </div>
+
+	    <!-- 📊 条件に合う衣服の一覧テーブル -->
+	    <h3 th:if="${selectedAttr != null and !selectedAttr.isEmpty()}">対象の衣服一覧</h3>
+	    <table border="1" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+	        <thead>
+	            <tr>
+	                <th>ID</th>
+	                <th>名前</th>
+	                <th>カテゴリ</th>
+	                <th>属性</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr th:each="cloth : ${clothes}">
+	                <td th:text="${cloth.id}"></td>
+	                <td th:text="${cloth.name}"></td>
+	                <td th:text="${cloth.category}"></td>
+	                <td th:text="${cloth.attribute}"></td>
+	            </tr>
+	        </tbody>
+	    </table>
+
+	</body>
 </html>
